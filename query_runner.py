@@ -46,15 +46,16 @@ def save_query_to_file(query, database, path):
     else:
         view_name = "unknown_view"
     
-    # Comment the first 5 lines of the query
+    # Comment the first 5 lines of the query if not already commented
     query_lines = query.split('\n')
     for i in range(min(5, len(query_lines))):
-        query_lines[i] = '-- ' + query_lines[i]
+        if not query_lines[i].strip().startswith('--'):
+            query_lines[i] = '-- ' + query_lines[i]
     commented_query = '\n'.join(query_lines)
     
     filename = f"{view_name}.sql"
     filepath = os.path.join(path + "\\" + database, filename)
-    with open(filepath, 'w') as file:
+    with open(filepath, 'w', encoding='utf-8') as file:
         file.write(commented_query)
     return filepath
 
@@ -81,6 +82,12 @@ def main():
     
     save_path = r"C:\Users\Alessandro\Documents\Programming\Phonenix\Views" 
     
+    # Add checkboxes for each database
+    selected_databases = []
+    for db in databases:
+        if st.checkbox(f"{db}", value=(db == starter_database)):
+            selected_databases.append(db)
+    
     if st.button("Run Queries"):
         if not query.strip():
             st.error("Please enter a query.")
@@ -93,7 +100,7 @@ def main():
             st.write(f"Query saved to: {filepath}")
             st.write(original_results)
             
-            for db in databases:
+            for db in selected_databases:
                 if starter_database != db:
                     modified_query = query.replace(starter_database, db)
                     st.text_area(f"Modified Query for {db}", value=modified_query, height=500)
