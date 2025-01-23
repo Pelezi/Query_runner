@@ -82,10 +82,10 @@ def main():
     
     save_path = r"C:\Users\Alessandro\Documents\Programming\Phonenix\Views" 
     
-    # Add checkboxes for each database
+    # Add checkboxes for each database, all selected by default
     selected_databases = []
     for db in databases:
-        if st.checkbox(f"{db}", value=(db == starter_database)):
+        if st.checkbox(f"{db}", value=True):
             selected_databases.append(db)
     
     if st.button("Run Queries"):
